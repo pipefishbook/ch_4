@@ -157,6 +157,7 @@ module.exports = ChoseView;
     },
 
     setChose: function() {
+      console.log(this.currentDetails);
       if (this.currentDetails) {
         this.removeView(this.currentDetails.cid);
       }
@@ -165,6 +166,7 @@ module.exports = ChoseView;
     },
     
     initialize: function(options) {
+      this.currentDetails = null;
       this.addView('#overview', new MoviesList({
         collection: options.router.movies,
         router: options.router
