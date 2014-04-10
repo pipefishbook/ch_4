@@ -9,7 +9,7 @@ $(document).ready(function() {
   console.log('init');
   var router = new MoviesRouter({el: $('#movies') });
   Backbone.history.start({
-    pushState: true,
+    pushState: false,
     root: '/'
   });
 });
@@ -101,9 +101,8 @@ var Backbone = require('backbone');
 var ChoseView = Backbone.View.extend({
 
   template: '<h1>Welcome to Munich Cinema</h1>\
-             <h2>Please chose a movie</h2>',
-
-  class: 'details',
+             <h2>Please choose a movie</h2>',
+  className: 'details',
   render: function() {
     this.$el.html(this.template);
     return this;
@@ -148,20 +147,25 @@ module.exports = ChoseView;
                </div>                \
                <div id="details">    \
                </div>'),
+
     setDetails: function(movie) {
       if (this.currentDetails) {
-        this.removeView(this.currentDetails.cid);
+        this.removeView(this.currentDetails);
+        this.render();
       }
-      this.currentDetails = new DetailsView({model: movie});
-      this.addView('#details', this.currentDetails);
+      var view = new DetailsView({model: movie});
+      this.addView('#details', {id: view.cid}, view);
+      this.currentDetails = view.cid;
     },
 
     setChose: function() {
       if (this.currentDetails) {
-        this.removeView(this.currentDetails.cid);
+        this.removeView(this.currentDetails);
+        this.render();
       }
-      this.currentDetails = new ChoseView();
-      this.addView('#details', this.currentDetails);
+      var view = new ChoseView();
+      this.addView('#details', {id: view.cid}, view);
+      this.currentDetails = view.cid;
     },
     
     initialize: function(options) {
@@ -194,7 +198,7 @@ var _ = require('underscore');
 var MovieView = Backbone.View.extend({
   tagName: 'article',
   className: 'movie',
-  template: '<h1><a href="/movies/<%= id %>"><%= title %></a><hr></h1>',
+  template: '<h1><a href="#movies/<%= id %>"><%= title %></a><hr></h1>',
 
   events: {
     'click': 'selectMovie'
@@ -204,7 +208,7 @@ var MovieView = Backbone.View.extend({
     // console.log($(ev.currentTarget).html());
     console.log('event on ' + this.model.id);
     if (!this.model.get('selected')) {
-      this.router.navigate("/movies/" + this.model.id, {trigger: true});
+      this.router.navigate("#movies/" + this.model.id, {trigger: true});
     }
   },
  
