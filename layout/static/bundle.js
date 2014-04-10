@@ -101,7 +101,7 @@ var Backbone = require('backbone');
 var ChoseView = Backbone.View.extend({
 
   template: '<h1>Welcome to Munich Cinema</h1>\
-             <h2>Please chose a movie</h2>',
+             <h2>Please choose a movie</h2>',
 
   class: 'details',
   render: function() {
@@ -148,20 +148,25 @@ module.exports = ChoseView;
                </div>                \
                <div id="details">    \
                </div>'),
+
     setDetails: function(movie) {
       if (this.currentDetails) {
-        this.removeView(this.currentDetails.cid);
+        this.removeView(this.currentDetails);
+        this.render();
       }
-      this.currentDetails = new DetailsView({model: movie});
-      this.addView('#details', this.currentDetails);
+      var view = new DetailsView({model: movie});
+      this.addView('#details', {id: view.cid}, view);
+      this.currentDetails = view.cid;
     },
 
     setChose: function() {
       if (this.currentDetails) {
-        this.removeView(this.currentDetails.cid);
+        this.removeView(this.currentDetails);
+        this.render();
       }
-      this.currentDetails = new ChoseView();
-      this.addView('#details', this.currentDetails);
+      var view = new ChoseView();
+      this.addView('#details', {id: view.cid}, view);
+      this.currentDetails = view.cid;
     },
     
     initialize: function(options) {
