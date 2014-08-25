@@ -7,7 +7,7 @@
   var DetailsView = require('views/details');
   var ChoseView = require('views/chose');
   
-  var Layout = Backbone.XView.extend({
+  var Layout = Backbone.View.extend({
 
     template: _.template('           \
                <div id="overview">   \
@@ -15,31 +15,39 @@
                <div id="details">    \
                </div>'),
 
+    render: function() {
+      this.$el.html(this.template());
+      this.currentDetails.setElement(this.$('#details')).render();
+      this.overview.setElement(this.$('#overview')).render();
+
+      return this;
+    },
+
     setDetails: function(movie) {
-      if (this.currentDetails) {
-        this.removeView(this.currentDetails);
-        this.render();
-      }
-      var view = new DetailsView({model: movie});
-      this.addView('#details', {id: view.cid}, view);
-      this.currentDetails = view.cid;
+      if (this.currentDetails) this.currentDetails.remove();
+      this.currentDetails = new DetailsView({model: movie});
+      this.render();
     },
 
     setChose: function() {
-      if (this.currentDetails) {
-        this.removeView(this.currentDetails);
-        this.render();
-      }
-      var view = new ChoseView();
-      this.addView('#details', {id: view.cid}, view);
-      this.currentDetails = view.cid;
+      if (this.currentDetails) this.currentDetails.remove();
+      this.currentDetails = new ChoseView();
+      this.render();
+    },
+
+   showMain: function() {
+          this.movies.resetSelected();
+          this.layout.setChose();
     },
     
     initialize: function(options) {
-      this.addView('#overview', new MoviesList({
-        collection: options.router.movies,
+      this.overview = new MoviesList({
+        el: options.el,
+        collection: options.collection,
         router: options.router
-      }));
+     });
+     this.currentDetails = new ChoseView();
+
     }
  
   });
