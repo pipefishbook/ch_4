@@ -1,5 +1,4 @@
   var Backbone = require('backbone');
-  Backbone.XView = require('backbone.xview');
   var _ = require('underscore');
   
   // import the moviesList
